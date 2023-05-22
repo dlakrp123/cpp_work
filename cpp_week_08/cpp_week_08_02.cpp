@@ -14,22 +14,42 @@ public:
     ~MyClass();
     void change(int, int);       // 배열 원소 변경
     void write(const string &&); // 배열 원소 출력
+    
 };
 
-MyClass::MyClass(int size){
+MyClass::MyClass(int size):size{size}{
     element = new int[size];
     for(int i = 0 ; i<size ; i++){
         element[i] = 0;
     }
 }
-MyClass::MyClass(const MyClass &my){
-
+MyClass::MyClass(const MyClass &my) : size{my.size}, element{my.element}{
+}
+MyClass::MyClass(MyClass &&my) noexcept{
+    size = my.size;
+    element = my.element;
+    my.element = nullptr;
+    my.size = 0;
+}
+MyClass::~MyClass(){
+    delete[] element;
+}
+void MyClass::change(int index, int value){
+    element[index] = value;
 }
 
-void MyClass::write(const string&&){
-    cout << my << 
+void MyClass::write(const string&& output){ 
+    cout << "======\t" << output <<"\t======" << endl;
+
+    for(int i = 0 ; i < size ; i ++){
+        cout << element[i] << "\t";
+    } 
+    cout<<endl;
 }
 
+void print(MyClass &&my, const string&& output){
+    my.write(move(output));
+}
 int main()
 {
     MyClass my{5};
